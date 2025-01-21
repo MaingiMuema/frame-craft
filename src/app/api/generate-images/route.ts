@@ -5,7 +5,16 @@ import fs from "fs";
 import path from "path";
 
 export async function POST(request: Request) {
-  const { prompts } = await request.json();
+  const body = await request.json();
+
+  if (!body.prompts || !Array.isArray(body.prompts)) {
+    return NextResponse.json(
+      { error: "Invalid request: prompts must be an array" },
+      { status: 400 }
+    );
+  }
+
+  const { prompts } = body;
 
   try {
     // Clean up old generated images
